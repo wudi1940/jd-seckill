@@ -24,12 +24,9 @@ public class Start {
     //fp
     static String fp = "0d956d9119e16bb4baed0509b236554a";
     //抢购数量
-    volatile static Integer ok = 1;
+    volatile static Integer ok = 2;
 
     static CookieManager manager = new CookieManager();
-
-    static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(20, 20, 0, TimeUnit.MILLISECONDS, new PriorityBlockingQueue<Runnable>(), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
-
 
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException, ParseException {
         CookieHandler.setDefault(manager);
@@ -44,10 +41,11 @@ public class Start {
         //判断是否开始抢购
         judgePruchase();
         //开始抢购
-        for (int i = 0; i < 20; i++) {
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(5, 10, 1000, TimeUnit.MILLISECONDS, new PriorityBlockingQueue<Runnable>(), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+        for (int i = 0; i < 5; i++) {
             threadPoolExecutor.execute(new RushToPurchase());
         }
-//        new RushToPurchase().run();
+        new RushToPurchase().run();
     }
 
     public static void judgePruchase() throws IOException, ParseException, InterruptedException {
@@ -62,15 +60,17 @@ public class Start {
             String startDate = buyDate.split("-202")[0] + ":00";
             System.out.println("抢购时间为：" + startDate);
             Long startTime = HttpUrlConnectionUtil.dateToTime(startDate);
-
-            //获取京东时间
-            JSONObject jdTime = JSONObject.parseObject(HttpUrlConnectionUtil.get(headers, "https://api.m.jd.com/client.action?functionId=queryMaterialProducts&client=wh5"));
-            Long serverTime = Long.valueOf(jdTime.get("currentTime2").toString());
-            if (startTime >= serverTime) {
-                System.out.println("正在等待抢购时间");
-                System.out.println("等待时间为(min)：" + (startTime - serverTime - 1000) / 1000 / 60);
-                // 阻塞直到开售前1s
-                Thread.sleep(startTime - serverTime - 1000);
+            //开始抢购
+            while (true) {
+                //获取京东时间
+                JSONObject jdTime = JSONObject.parseObject(HttpUrlConnectionUtil.get(headers, "https://api.m.jd.com/client.action?functionId=queryMaterialProducts&client=wh5"));
+                Long serverTime = Long.valueOf(jdTime.get("currentTime2").toString());
+                if (startTime >= serverTime) {
+                    System.out.println("正在等待抢购时间");
+                    Thread.sleep(300);
+                } else {
+                    break;
+                }
             }
         }
     }
