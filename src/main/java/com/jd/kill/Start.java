@@ -17,8 +17,8 @@ public class Start {
     final static String headerAgentArg = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36";
     final static String Referer = "Referer";
     final static String RefererArg = "https://passport.jd.com/new/login.aspx";
-    //商品id 茅台 100012043978 ps5 100021367452
-    static String pid = "100021367452";
+    //商品id 茅台 100012043978 ps5 100021367452  100019378198
+    static String pid = "100019378198";
     //eid
     static String eid = "FSLJAML4GT6DHFUTRTYPG4C3Q4ZT733I3UTZXVZUTWOJAGGM5E7TXVDHLUQJHVEC5L7RHQ2WD4KYARC2SHNZGEU5BI";
     //fp
